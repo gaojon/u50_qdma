@@ -1,7 +1,5 @@
 # u50_qdma design 
-Since the U50 Vivado flow is available, folks from hardare may be interested in u50 qdma design with Vivado flow. Here is the simple example of QDMA and HBM to demostrate how to do data DMA from HBM and host memory. Here is the bd block diagram.
-
-![System](./doc/bd.jpg)
+Since the U50 Vivado flow is available, folks from hardare may be interested in u50 qdma design with Vivado flow. Here is the simple example of QDMA and HBM to demostrate how to do data DMA from BRAM and host memory. 
 
 # Build the bitstream and MCS
 
@@ -30,6 +28,12 @@ set_property PULLTYPE PULLDOWN [get_ports HBM_CATTRIP]
 
 set_property PACKAGE_PIN AW27 [get_ports sys_rst_n]
 set_property PACKAGE_PIN AB9 [get_ports sys_clk_p]
+```
+
+All those above manual changes could be done automatically by following command
+```
+$cd hw
+$make 
 ```
 
 ## Program the flash
