@@ -93,7 +93,7 @@ $sudo su
 
 
 
-# check and remove xdma driver if installed before
+# Check and remove xdma driver if installed before
 
 ```
 $sudo lsmod |grep xdma
@@ -101,7 +101,7 @@ $sudo rm -rf /lib/modules/5.15.0-25-generic/xdma
 $sudo depmod -a
 ```
 
-# create huge page memory Device and GRUB setting
+# Create huge page memory Device and GRUB setting
 ```
 
 #mkdir /mnt/huge
@@ -121,7 +121,7 @@ then update the GRUB and reboot system.
 ```
 
 
-# install kernel module drivers
+# Install kernel module drivers
 ```
 #modprobe uio
 #insmod ../../dpdk-kmods/linux/igb_uio/igb_uio.ko 
@@ -132,20 +132,37 @@ Bind PF ports to igb_uio module
 #../../usertools/dpdk-devbind.py -b igb_uio 01:00.0
 ```
 
-# run qdma_testapp 
+# Run qdma_testapp 
 ```
 ./build/qdma_testapp -c 0xf -n 1
 ```
 
-run under qdma_testapp CLI
+
+## AXI MM data flow testings
 ```
 #port_init <port-id> <num-queues> <num-st-queues> <ring-depth> <pkt-buff-size>
 port_init 0 1 0 1024 2048
 
 #dma_to_device <port-id> <num-queues> <input-filename> <dst-addr> <size> <iterations>
-dma_from_device 0 1 port0_qcount8_size524288.bin 0 524288 0
+dma_from_device 0 1 port0_qcount8_size524288.bin 0 2048 0
 
 #dma_from_device <port-id> <num-queues> <output-filename> <src-addr> <size> <iterations>
 dma_to_device 0 1 datafile_8K.bin 0 256 0
+
+```
+
+## AXI Stream data flow testings 
+```
+#port_init <port-id> <num-queues> <num-st-queues> <ring-depth> <pkt-buff-size>
+port_init 0 1 1 1024 2048
+
+#Stream loopback register setting
+reg_write 0 2 0x8 0x21
+
+#dma_from_device <port-id> <num-queues> <output-filename> <src-addr> <size> <iterations>
+dma_to_device 0 1 datafile_8K.bin 0 256 0
+
+#dma_to_device <port-id> <num-queues> <input-filename> <dst-addr> <size> <iterations>
+dma_from_device 0 1 port0_qcount8_size524288.bin 0 256 0
 
 ```
